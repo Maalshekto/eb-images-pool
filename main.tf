@@ -35,6 +35,7 @@ resource "aws_ecr_repository" "my_apps" {
     Name        = local.app_dirs[count.index]
     Environment = "production"
   }
+  force_delete = true
 }
 
 # Création d'un rôle IAM pour accéder à ECR
