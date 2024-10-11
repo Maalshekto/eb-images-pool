@@ -17,6 +17,18 @@ jobs:
       # Checks out the code from the repository
       - name: Checkout code
         uses: actions/checkout@v4  
+      - name: Generate app_dirs.txt
+        run: |
+          # Vider le fichier avant d'ajouter les nouveaux noms de dossier
+          > app_dirs.txt
+          
+          # Parcourir les sous-dossiers et ajouter ceux qui contiennent un Dockerfile
+          for dir in container-apps/*; do
+            if [ -d "$dir" ] && [ -f "$dir/Dockerfile" ]; then
+              echo "$(basename "$dir")" >> app_dirs.txt
+            fi
+          done
+
 
       # Sets up Terraform in the workflow
       - name: Set up Terraform
