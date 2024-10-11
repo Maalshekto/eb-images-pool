@@ -20,7 +20,7 @@ terraform {
 
 # Création d'un dépôt ECR
 resource "aws_ecr_repository" "my_app" {
-  name = "EB-GH-ECR"  # Nom du dépôt ECR
+  name = "eb-gh-ecr"  # Nom du dépôt ECR
 
   image_tag_mutability = "IMMUTABLE"  # Peut être "MUTABLE" ou "IMMUTABLE"
   tags = {
