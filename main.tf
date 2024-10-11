@@ -91,6 +91,6 @@ resource "aws_iam_role_policy_attachment" "ecr_role_attachment" {
 }
 
 output "ecr_repository_urls" {
-  value = [for repo in aws_ecr_repository.my_app : "${repo.repository_url}"]
+  value = [for repo in aws_ecr_repository.my_apps : "${repo.repository_url}"]
   description = "List of ECR repository URLs"
 }
