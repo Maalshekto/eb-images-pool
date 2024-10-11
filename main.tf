@@ -22,7 +22,7 @@ terraform {
 
 # Récupération des noms des dossiers dans le répertoire container-apps
 locals {
-  app_dirs = [for dir in file("app_dirs.txt") : dir]
+  app_dirs = [for dir in split("\n", trim(file("app_dirs.txt"))) : dir if dir != ""]
 }
 # Création d'un dépôt ECR pour chaque dossier
 resource "aws_ecr_repository" "my_apps" {
