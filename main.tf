@@ -22,7 +22,8 @@ terraform {
 
 # Récupération des noms des dossiers dans le répertoire container-apps
 locals {
-  app_dirs = [for dir in fileset("${path.module}/container-apps", "*") : basename(dir)]
+  app_dirs = ["nodejs"]
+  # app_dirs = [for dir in fileset("${path.module}/container-apps", "*") : basename(dir)]
 }
 
 # Création d'un dépôt ECR pour chaque dossier
