@@ -28,7 +28,7 @@ jobs:
               echo "$(basename "$dir")" >> app_dirs.txt
             fi
           done
-
+          cat app_dirs.txt
 
       # Sets up Terraform in the workflow
       - name: Set up Terraform
