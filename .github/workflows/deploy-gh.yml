@@ -5,7 +5,7 @@ on:
     branches:
       - main  # Triggers the workflow on push to the main branch
     paths:
-      - '.github/*'
+      - '.github/workflows/**'
 
   workflow_dispatch:  # Allows manual execution of the workflow
 
