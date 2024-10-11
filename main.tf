@@ -90,6 +90,7 @@ resource "aws_iam_role_policy_attachment" "ecr_role_attachment" {
   policy_arn = aws_iam_policy.ecr_policy.arn
 }
 
-output "ecr_repository_uri" {
-  value = aws_ecr_repository.my_app.repository_url
+output "ecr_repository_urls" {
+  value = [for repo in aws_ecr_repository.my_app : "${repo.repository_url}"]
+  description = "List of ECR repository URLs"
 }
