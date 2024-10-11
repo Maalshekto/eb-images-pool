@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - '.github/*'
 
 jobs:
   build:
@@ -31,11 +33,18 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t my-app:${{ github.sha }} .
+      # Get AWS Account ID
+      - name: Get AWS Account ID
+        id: get_account_id
+        run: |
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          echo "ACCOUNT_ID=$ACCOUNT_ID" >> $GITHUB_ENV
+
       # Tag the image for ECR
       - name: Tag Docker image
         run: |
-          docker tag my-app:${{ github.sha }} <aws_account_id>.dkr.ecr.<region>.amazonaws.com/my-app:${{ github.sha }}
+          docker tag my-app:${{ github.sha }} ${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com/my-app:${{ github.sha }}
       # Push the Docker image to ECR
       - name: Push Docker image to ECR
         run: |
-          docker push <aws_account_id>.dkr.ecr.<region>.amazonaws.com/my-app:${{ github.sha }}
+          docker push ${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com/my-app:${{ github.sha }}
