@@ -13,7 +13,29 @@ jobs:
       # Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4
-
       # Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      # Configure AWS credentials using the action
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1  # Remplacez par votre région
+      # Log in to AWS ECR
+      - name: Log in to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+       
+      # Build the Docker image
+      - name: Build Docker image
+        run: |
+          docker build -t my-app:${{ github.sha }} .
+      # Tag the image for ECR
+      - name: Tag Docker image
+        run: |
+          docker tag my-app:${{ github.sha }} <aws_account_id>.dkr.ecr.<region>.amazonaws.com/my-app:${{ github.sha }}
+      # Push the Docker image to ECR
+      - name: Push Docker image to ECR
+        run: |
+          docker push <aws_account_id>.dkr.ecr.<region>.amazonaws.com/my-app:${{ github.sha }}
