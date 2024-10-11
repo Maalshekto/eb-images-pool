@@ -44,10 +44,10 @@ jobs:
       # Build and push Docker images for each application in the container-apps directory
       - name: Build and push Docker images
         run: |
-          ls -rtl
           IMAGE_TAG="${{ github.sha }}-${{ github.run_id }}"  # Create a tag based on the commit SHA and the run ID
-          
+         
           for dir in container-apps/*/; do
+            echo $dir
             IMAGE_NAME="${{ env.ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/${dir##*/}"  # Update with your AWS Account ID
             echo "Building and pushing $IMAGE_NAME:$IMAGE_TAG"
 
