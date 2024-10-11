@@ -17,9 +17,11 @@ jobs:
       # Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4
+
       # Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
       # Configure AWS credentials using the action
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -27,14 +29,11 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1  # Remplacez par votre région
+
       # Log in to AWS ECR
       - name: Log in to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
-       
-      # Build the Docker image
-      - name: Build Docker image
-        run: |
-          docker build -t my-app:${{ github.sha }} .
+      
       # Get AWS Account ID
       - name: Get AWS Account ID
         id: get_account_id
@@ -42,11 +41,18 @@ jobs:
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           echo "ACCOUNT_ID=$ACCOUNT_ID" >> $GITHUB_ENV
 
-      # Tag the image for ECR
-      - name: Tag Docker image
+      # Build and push Docker images for each application in the container-apps directory
+      - name: Build and push Docker images
         run: |
-          docker tag my-app:${{ github.sha }} ${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com/eb-gh-ecr:${{ github.sha }}
-      # Push the Docker image to ECR
-      - name: Push Docker image to ECR
-        run: |
-          docker push ${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com/eb-gh-ecr:${{ github.sha }}
+          IMAGE_TAG="${{ github.sha }}-${{ github.run_id }}"  # Create a tag based on the commit SHA and the run ID
+          
+          for dir in container-apps/*/; do
+            IMAGE_NAME="${{ env.ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/${dir##*/}"  # Update with your AWS Account ID
+            echo "Building and pushing $IMAGE_NAME:$IMAGE_TAG"
+
+            # Build and tag the Docker image
+            docker build -t $IMAGE_NAME:$IMAGE_TAG "$dir"
+            docker tag $IMAGE_NAME:$IMAGE_TAG $IMAGE_NAME:latest  # Tag the image as latest
+            docker push $IMAGE_NAME:$IMAGE_TAG  # Push the image with the specific tag
+            docker push $IMAGE_NAME:latest  # Push the latest tagged image
+          done

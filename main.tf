@@ -19,14 +19,26 @@ terraform {
 }
 
 # Création d'un dépôt ECR
-resource "aws_ecr_repository" "my_app" {
-  name = "eb-gh-ecr"  # Nom du dépôt ECR
 
+# Récupération des noms des dossiers dans le répertoire container-apps
+locals {
+  app_dirs = [for dir in fileset("${path.module}/container-apps", "*") : basename(dir)]
+}
+
+# Création d'un dépôt ECR pour chaque dossier
+resource "aws_ecr_repository" "my_app" {
+  count = length(local.app_dirs)
+
+  name = local.app_dirs[count.index]  # Utilisation du nom du dossier comme nom du dépôt
   image_tag_mutability = "IMMUTABLE"  # Peut être "MUTABLE" ou "IMMUTABLE"
   tags = {
-    Name        = "EB-GH-ECR"
+    Name        = local.app_dirs[count.index]
     Environment = "production"
   }
+}
+
+resource "aws_ecr_repository" "my_app" {
+  name = "eb-gh-ecr"  # Nom du dépôt ECR
 }
 
 # Création d'un rôle IAM pour accéder à ECR
