@@ -37,10 +37,6 @@ resource "aws_ecr_repository" "my_app" {
   }
 }
 
-resource "aws_ecr_repository" "my_app" {
-  name = "eb-gh-ecr"  # Nom du dépôt ECR
-}
-
 # Création d'un rôle IAM pour accéder à ECR
 resource "aws_iam_role" "ecr_role" {
   name = "ECRAccessRole"
