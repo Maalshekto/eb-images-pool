@@ -26,7 +26,7 @@ locals {
 }
 
 # Création d'un dépôt ECR pour chaque dossier
-resource "aws_ecr_repository" "my_app" {
+resource "aws_ecr_repository" "my_apps" {
   count = length(local.app_dirs)
 
   name = local.app_dirs[count.index]  # Utilisation du nom du dossier comme nom du dépôt
