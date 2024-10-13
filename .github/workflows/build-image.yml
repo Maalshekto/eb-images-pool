@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - '.github/workflows/**'
+    paths:
+      - 'container-apps/**'  # Trigger only if changes are made in the container-apps directory
 
   workflow_dispatch:  # Allows manual execution of the workflow
 
@@ -45,15 +45,14 @@ jobs:
       - name: Build and push Docker images
         run: |
           IMAGE_TAG="${{ github.sha }}-${{ github.run_id }}"  # Create a tag based on the commit SHA and the run ID
-         
+           # Loop through all directories in 'container-apps'
           for dir in container-apps/*/; do
-            echo $(basename ${dir})
-            IMAGE_NAME="${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com/$(basename ${dir})"  # Update with your AWS Account ID
+            IMAGE_NAME="${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com/$(basename ${dir})"
             echo "Building and pushing $IMAGE_NAME:$IMAGE_TAG"
-
-            # Build and tag the Docker image
+      
+            # Build the Docker image with a unique tag
             docker build -t $IMAGE_NAME:$IMAGE_TAG "$dir"
-            docker tag $IMAGE_NAME:$IMAGE_TAG $IMAGE_NAME:latest  # Tag the image as latest
-            docker push $IMAGE_NAME:$IMAGE_TAG  # Push the image with the specific tag
-            docker push $IMAGE_NAME:latest  # Push the latest tagged image
+      
+            # Push the image with the unique tag to ECR
+            docker push $IMAGE_NAME:$IMAGE_TAG
           done

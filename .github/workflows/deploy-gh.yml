@@ -5,8 +5,8 @@ on:
     branches:
       - main  # Triggers the workflow on push to the main branch
     paths:
-      - '.github/workflows/**'
-
+      - 'main.tf'  # Trigger only if the main.tf file is modified
+      
   workflow_dispatch:  # Allows manual execution of the workflow
 
 jobs:
@@ -17,6 +17,7 @@ jobs:
       # Checks out the code from the repository
       - name: Checkout code
         uses: actions/checkout@v4  
+
       - name: Generate app_dirs.txt
         run: |
           # Vider le fichier avant d'ajouter les nouveaux noms de dossier
@@ -28,8 +29,7 @@ jobs:
               echo "$(basename "$dir")" >> app_dirs.txt
             fi
           done
-          cat app_dirs.txt
-
+          
       # Sets up Terraform in the workflow
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3  
