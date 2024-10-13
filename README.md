@@ -4,7 +4,7 @@ This project automates the process of creating, building, deploying, and destroy
 
 ## Features
 
-1. **AWS ECR Repository Creation**: Automatically creates AWS ECR repositories for each subdirectory.
+1. **AWS ECR Repository Creation**: Automatically creates AWS ECR repositories for each subdirectory of container-apps.
 2. **Docker Image Build & Push**: Builds Docker images and pushes them to their respective ECR repositories.
 3. **Resource Cleanup**: Cleans up AWS resources (ECR repositories, IAM roles) when no longer needed.
 
