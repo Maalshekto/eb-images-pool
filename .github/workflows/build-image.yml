@@ -51,7 +51,7 @@ jobs:
         run: |
           # Get the list of modified directories
           git fetch origin main
-          MODIFIED_DIRS=$(git diff --name-only HEAD origin/main | grep 'container-apps/' | cut -d'/' -f2 | sort -u)
+          MODIFIED_DIRS=$(git diff --name-only origin/main...HEAD -- container-apps/ | awk -F/ '{print $2}' | sort -u)
           if [ -z "$MODIFIED_DIRS" ]; then
             echo "No modified directories found."
             echo "modified_dirs=" >> $GITHUB_ENV
