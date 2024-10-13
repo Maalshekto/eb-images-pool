@@ -69,7 +69,7 @@ jobs:
             echo "Building and pushing $IMAGE_NAME:$IMAGE_TAG"
       
             # Build the Docker image with a unique tag
-            docker build -t $IMAGE_NAME:$IMAGE_TAG "$dir"
+            docker build -t $IMAGE_NAME:$IMAGE_TAG "container-apps/$dir"
       
             # Push the image with the unique tag to ECR
             docker push $IMAGE_NAME:$IMAGE_TAG
