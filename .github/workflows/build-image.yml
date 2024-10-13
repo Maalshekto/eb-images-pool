@@ -46,11 +46,11 @@ jobs:
         run: |
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           echo "ACCOUNT_ID=$ACCOUNT_ID" >> $GITHUB_ENV
-      - name: Get modified directories
+      - name: Get modified direct0ories
         id: modified_dirs
         run: |
           echo "Modified directories:"
-          git diff --name-only HEAD^ HEAD | grep 'container-apps/' | cut -d'/' -f2 | sort -u > modified_dirs.txt
+          git diff --name-only HEAD~1 HEAD | grep 'container-apps/' | cut -d'/' -f2 | sort -u > modified_dirs.txt
           cat modified_dirs.txt
           echo "modified_dirs=$(<modified_dirs.txt)" >> $GITHUB_ENV
       # Build and push Docker images for each application in the container-apps directory
