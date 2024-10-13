@@ -4,11 +4,18 @@ on:
   push:
     branches:
       - main
+    # Trigger only if changes are made in the container-apps directory
     paths:
-      - 'container-apps/**'  # Trigger only if changes are made in the container-apps directory
+      - 'container-apps/**'  
+    # Ignore new folders
+    paths-ignore:
+      - 'container-apps/*/'
 
   workflow_dispatch:  # Allows manual execution of the workflow
-
+  workflow_run:
+    workflows: ["Deploy GHEB Infrastructure"]
+    types:
+      - completed
 jobs:
   build:
     runs-on: ubuntu-latest

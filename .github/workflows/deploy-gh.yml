@@ -5,8 +5,9 @@ on:
     branches:
       - main  # Triggers the workflow on push to the main branch
     paths:
-      - 'main.tf'  # Trigger only if the main.tf file is modified
-      
+      - 'main.tf'  # Trigger if the main.tf file is modified
+      - 'container-apps/*/' # Trigger if container-apps get a new folder
+
   workflow_dispatch:  # Allows manual execution of the workflow
 
 jobs:
