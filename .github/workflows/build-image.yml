@@ -8,8 +8,6 @@ on:
     paths:
       - 'container-apps/**'  
     # Ignore new folders
-    paths-ignore:
-      - 'container-apps/*/'
 
   workflow_dispatch:  # Allows manual execution of the workflow
   workflow_run:
