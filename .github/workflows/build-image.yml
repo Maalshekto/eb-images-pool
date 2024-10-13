@@ -23,7 +23,8 @@ jobs:
       # Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4
-
+        with:
+          fetch-depth: 2
       # Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -49,9 +50,8 @@ jobs:
       - name: Get modified directories
         id: modified_dirs
         run: |
-          # Get the list of modified directories
-          git fetch origin main
-          MODIFIED_DIRS=$(git diff --name-only origin/main...HEAD -- container-apps/ | awk -F/ '{print $2}' | sort -u)
+          # Compare with the previous commit and list modified directories
+          MODIFIED_DIRS=$(git diff --name-only HEAD^ -- container-apps/  | awk -F/ '{print $2}' | sort -u)
           if [ -z "$MODIFIED_DIRS" ]; then
             echo "No modified directories found."
             echo "modified_dirs=" >> $GITHUB_ENV
