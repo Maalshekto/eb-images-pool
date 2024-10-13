@@ -46,7 +46,9 @@ jobs:
         run: |
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           echo "ACCOUNT_ID=$ACCOUNT_ID" >> $GITHUB_ENV
-      run: |
+      - name: Get modified directories
+        id: modified_dirs
+        run: |
           echo "Modified directories:"
           git diff --name-only HEAD^ HEAD | grep 'container-apps/' | cut -d'/' -f2 | sort -u > modified_dirs.txt
           cat modified_dirs.txt
