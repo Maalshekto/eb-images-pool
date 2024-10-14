@@ -56,6 +56,7 @@ jobs:
             echo "manual_trigger=true" >> $GITHUB_ENV
           else
             echo "manual_trigger=false" >> $GITHUB_ENV
+          fi
 
       # Get modified directories or all directories if triggered manually
       - name: Get directories
