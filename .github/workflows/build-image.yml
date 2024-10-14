@@ -69,7 +69,7 @@ jobs:
             # Compare with the previous commit and list modified directories
             DIRS=$(git diff --name-only HEAD^ -- container-apps/ | awk -F/ '{print $2}' | sort -u)
           fi
-          if [[ -z "$DIRS" ]]; then
+          if [ -z "$DIRS" ]; then
             echo "No directories found."
             echo "dirs=" >> $GITHUB_ENV
           else
