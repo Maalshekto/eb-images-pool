@@ -47,18 +47,33 @@ jobs:
         run: |
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           echo "ACCOUNT_ID=$ACCOUNT_ID" >> $GITHUB_ENV
-      - name: Get modified directories
-        id: modified_dirs
+      
+      # Check if triggered by "Deploy GHEB Infrastructure" manually
+      - name: Check if triggered by "Deploy GHEB Infrastructure" manually
+        id: check_manual_trigger
         run: |
-          # Compare with the previous commit and list modified directories
-          MODIFIED_DIRS=$(git diff --name-only HEAD^ -- container-apps/  | awk -F/ '{print $2}' | sort -u)
-          if [ -z "$MODIFIED_DIRS" ]; then
-            echo "No modified directories found."
-            echo "modified_dirs=" >> $GITHUB_ENV
+          if [[ "${{ github.event.workflow_run.event }}" == "workflow_dispatch" ]]; then
+            echo "manual_trigger=true" >> $GITHUB_ENV
           else
-            echo "$MODIFIED_DIRS" > modified_dirs.txt
-            echo "modified_dirs=$(<modified_dirs.txt)" >> $GITHUB_ENV
+            echo "manual_trigger=false" >> $GITHUB_ENV
+
+      # Get modified directories or all directories if triggered manually
+      - name: Get directories
+        id: get_dirs
+        run: |
+          if [[ "${{ env.manual_trigger }}" == "true" ]]; then
+            # List all directories in 'container-apps'
+            DIRS=$(ls -d container-apps/*/ | awk -F/ '{print $2}')
+          else
+            # Compare with the previous commit and list modified directories
+            DIRS=$(git diff --name-only HEAD^ -- container-apps/ | awk -F/ '{print $2}' | sort -u)
           fi
+          if [ -z "$DIRS" ]]; then
+            echo "No directories found."
+            echo "dirs=" >> $GITHUB_ENV
+          else
+            echo "$DIRS" > dirs.txt
+            echo "dirs=$(<dirs.txt)" >> $GITHUB_ENV
       # Build and push Docker images for each application in the container-apps directory
       - name: Build and push Docker images
         run: |
