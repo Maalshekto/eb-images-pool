@@ -94,7 +94,7 @@ jobs:
             DIRS=$(ls -d container-apps/*/ | awk -F/ '{print $2}')
           else
             # Compare with the previous commit and list modified directories
-            DIRS=$(git diff --name-only HEAD^ -- container-apps/ | awk -F/ '{print $2}' | sort -u)
+            DIRS=$(git diff --name-status HEAD^ -- container-apps/ | grep -v '^D' | awk -F/ '{print $2}' | sort -u)
           fi
           if [ -z "$DIRS" ]; then
             echo "No directories found."
