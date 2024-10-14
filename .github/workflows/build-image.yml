@@ -31,12 +31,12 @@ jobs:
             NEW_FOLDERS=$(git diff --name-status HEAD^ HEAD | grep '^A' | grep 'container-apps/' | awk -F/ '{print $2}' | sort -u)
             if [ -n "$NEW_FOLDERS" ]; then
               echo "New folders detected: $NEW_FOLDERS"
-              run: echo "new_folders=true" >> $GITHUB_OUTPUT
+              echo "new_folders=true" >> $GITHUB_OUTPUT
             else 
-              run: echo "new_folders=false" >> $GITHUB_OUTPUT
+              echo "new_folders=false" >> $GITHUB_OUTPUT
             fi
           else
-              run: echo "new_folders=false" >> $GITHUB_OUTPUT
+              echo "new_folders=false" >> $GITHUB_OUTPUT
           fi
   build:
     runs-on: ubuntu-latest
