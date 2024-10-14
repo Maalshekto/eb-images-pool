@@ -18,13 +18,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'new folder')"  # Prevent if new folder added
-
     steps:
       # Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 2
+      - name: Check for new folders
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            NEW_FOLDERS=$(git diff --name-status HEAD^ HEAD | grep '^A' | grep 'container-apps/' | awk -F/ '{print $2}' | sort -u)
+            if [ -n "$NEW_FOLDERS" ]; then
+              echo "New folders detected: $NEW_FOLDERS"
+              exit 1
+            fi
+          fi
       # Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
