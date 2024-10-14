@@ -30,7 +30,8 @@ jobs:
             NEW_FOLDERS=$(git diff --name-status HEAD^ HEAD | grep '^A' | grep 'container-apps/' | awk -F/ '{print $2}' | sort -u)
             if [ -n "$NEW_FOLDERS" ]; then
               echo "New folders detected: $NEW_FOLDERS"
-              exit 1
+              echo "##[warning]New folders detected. Cancelling the workflow."
+              exit 78  # Exit with a special code to indicate cancellation
             fi
           fi
       # Set up Docker Buildx
