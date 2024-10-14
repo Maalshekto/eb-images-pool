@@ -69,7 +69,7 @@ jobs:
             # Compare with the previous commit and list modified directories
             DIRS=$(git diff --name-only HEAD^ -- container-apps/ | awk -F/ '{print $2}' | sort -u)
           fi
-          if [ -z "$DIRS" ]]; then
+          if [[ -z "$DIRS" ]]; then
             echo "No directories found."
             echo "dirs=" >> $GITHUB_ENV
           else
@@ -81,7 +81,7 @@ jobs:
         run: |
           IMAGE_TAG="${{ github.sha }}-${{ github.run_id }}"  # Create a tag based on the commit SHA and the run ID
            # Loop through all directories in 'container-apps'
-          for dir in ${{ env.modified_dirs }}; do
+          for dir in ${{ env.dirs }}; do
             IMAGE_NAME="${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com/$(basename ${dir})"
             echo "Building and pushing $IMAGE_NAME:$IMAGE_TAG"
       
