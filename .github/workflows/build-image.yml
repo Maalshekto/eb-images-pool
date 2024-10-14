@@ -30,10 +30,28 @@ jobs:
             NEW_FOLDERS=$(git diff --name-status HEAD^ HEAD | grep '^A' | grep 'container-apps/' | awk -F/ '{print $2}' | sort -u)
             if [ -n "$NEW_FOLDERS" ]; then
               echo "New folders detected: $NEW_FOLDERS"
-              echo "##[warning]New folders detected. Cancelling the workflow."
-              exit 78  # Exit with a special code to indicate cancellation
+              echo "new_folders=true" >> $GITHUB_ENV
+            else 
+              echo "new_folders=false" >> $GITHUB_ENV
             fi
+          else
+              echo "new_folders=false" >> $GITHUB_ENV
           fi
+      - name: Cancel workflow if new folders detected
+        if: env.new_folders == 'true'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: context.workflow,
+              ref: context.ref,
+              inputs: {
+                cancel: true
+              }
+            })
+            core.setFailed('New folders detected, cancelling the workflow.')
       # Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
