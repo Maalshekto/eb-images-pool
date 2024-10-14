@@ -74,6 +74,7 @@ jobs:
             echo "dirs=" >> $GITHUB_ENV
           else
             echo "$DIRS" > dirs.txt
+            cat dirs.txt
             echo "dirs=$(<dirs.txt)" >> $GITHUB_ENV
           fi
       # Build and push Docker images for each application in the container-apps directory
