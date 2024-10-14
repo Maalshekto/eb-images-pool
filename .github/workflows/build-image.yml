@@ -33,9 +33,11 @@ jobs:
               echo "New folders detected: $NEW_FOLDERS"
               echo "new_folders=true" >> $GITHUB_OUTPUT
             else 
+              echo "New folders not detected."
               echo "new_folders=false" >> $GITHUB_OUTPUT
             fi
           else
+              echo "Manual trigger detected."
               echo "new_folders=false" >> $GITHUB_OUTPUT
           fi
   build:
