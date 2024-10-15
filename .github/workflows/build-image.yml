@@ -26,6 +26,7 @@ jobs:
         with:
           fetch-depth: 2
       - name: Check for new folders
+        id: check_new_folders
         run: |
           if [[ "${{ github.event_name }}" == "push" ]]; then
             NEW_FOLDERS=$(git diff --name-status HEAD^ HEAD | grep '^A' | grep 'container-apps/' | awk -F/ '{print $2}' | sort -u)
@@ -43,7 +44,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     needs: pre-check
-    if: jobs.pre-check.outputs.new_folders == 'false'
+    if: needs.pre-check.outputs.new_folders == 'false'
     steps:
       # Set up Docker Buildx
       - name: Set up Docker Buildx
