@@ -1,4 +1,4 @@
-# EB Images Pool
+# IB Images Pool
 
 This project automates the process of creating, building, deploying, and destroying Docker images using GitHub Actions and AWS services. The repository manages multiple Docker images, each linked to a specific subdirectory.
 
